@@ -8,4 +8,4 @@ script:
     - chmod +x ./build.sh
     - chmod +x ./github-release.sh
     - ./build.sh
-after_success: ./github-release.sh "$TRAVIS_REPO_SLUG" "`head -1 src/VERSION`" bin/Release/ETGMod.Installer.exe
+after_success: ./github-release.sh "$TRAVIS_REPO_SLUG" "$TRAVIS_TAG" bin/Release/ETGMod.Installer.exe
