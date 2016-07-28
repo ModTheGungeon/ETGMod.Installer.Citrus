@@ -24,6 +24,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <StartupObject>ETGModInstaller.ExtInstaller</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,6 +50,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\Properties\AssemblyInfo.cs" />
+    <Compile Include="srcExt\De4DotHelper.cs" />
+    <Compile Include="srcExt\ExtInstaller.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="AssetsExt\de4dot.zip" />
   </ItemGroup>
   <Import Project="Core\Files.xml" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
