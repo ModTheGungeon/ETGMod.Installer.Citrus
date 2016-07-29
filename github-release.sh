@@ -152,7 +152,7 @@ EOF
   echo DONE
 elif [ "`echo "$RESULT" | tail -1`" = "200" ]; then
   echo "GitHub release $RELEASE existing, adding assets."
-  RELEASEID=`echo $RESULT | grep '"id":' | sed 's/.*://' | tr -d '[[:space:]]'`
+  RELEASEID=`echo "$RESULT" | sed -ne 's/^  "id": \(.*\),$/\1/p'`
   echo "Release ID: \"$RELEASEID\""
 else
   echo "Error: No release files provided"
