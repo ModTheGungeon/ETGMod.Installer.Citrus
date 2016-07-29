@@ -153,6 +153,7 @@ EOF
 elif [ "`echo "$RESULT" | tail -1`" = "200" ]; then
   echo "GitHub release $RELEASE existing, adding assets."
   RELEASEID=`echo $RESULT | grep '"id":' | sed 's/.*://' | tr -d '[[:space:]]'`
+  echo "Release ID: \"$RELEASEID\""
 else
   echo "Error: No release files provided"
   exit 1
@@ -169,9 +170,9 @@ for FILE in $RELEASEFILES; do
   RESULT=`curl -s -w "\n%{http_code}\n"                   \
     -H "Authorization: token $GITHUBTOKEN"                \
     -H "Accept: application/vnd.github.manifold-preview"  \
-    -H "Content-Type: application/zip"                    \
+    -H "Content-Type: application/octet-stream"           \
     --data-binary "@$FILE"                                \
-    "https://uploads.github.com/repos/$REPO/releases/$RELEASEID/assets?name=$FILENAME&size=$FILESIZE"`
+    "https://uploads.github.com/repos/$REPO/releases/$RELEASEID/assets?name=$FILENAME"`
   if [ "`echo "$RESULT" | tail -1`" != "201" ]; then
     echo FAILED
     echo "$RESULT" 
