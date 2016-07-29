@@ -118,7 +118,6 @@ fi
 echo "Checking if GitHub release for $RELEASE exists already"
 RESULT=`curl -s -w "\n%{http_code}\n"     \
   -H "Authorization: token $GITHUBTOKEN"  \
-  -d "$JSON"                              \
   "https://api.github.com/repos/$REPO/releases/tags/$RELEASE"`
 if [ "`echo "$RESULT" | tail -1`" = "404" ]; then
   echo "Creating GitHub release for $RELEASE"
