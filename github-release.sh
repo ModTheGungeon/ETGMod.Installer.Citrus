@@ -125,16 +125,16 @@ if [ "`echo "$RESULT" | tail -1`" = "404" ]; then
   RELEASENEW=true
 
   echo -n "Create draft release... "
-  JSON=$(cat <<EOF
-  {
-    "tag_name":         "$TAG",
-    "target_commitish": "master",
-    "name":             "$TAG",
-    "draft":            true,
-    "prerelease":       false
-  }
-  EOF
-  )
+JSON=$(cat <<EOF
+{
+  "tag_name":         "$TAG",
+  "target_commitish": "master",
+  "name":             "$TAG",
+  "draft":            true,
+  "prerelease":       false
+}
+EOF
+)
   RESULT=`curl -s -w "\n%{http_code}\n"     \
     -H "Authorization: token $GITHUBTOKEN"  \
     -d "$JSON"                              \
@@ -182,23 +182,23 @@ for FILE in $RELEASEFILES; do
 done 
 
 if [ "$RELEASENEW" = true ]; then
-	echo -n "Publishing release... "
-	JSON=$(cat <<EOF
-	{
-	  "draft": false
-	}
-	EOF
-	)
-	RESULT=`curl -s -w "\n%{http_code}\n"     \
-	  -X PATCH                                \
-	  -H "Authorization: token $GITHUBTOKEN"  \
-	  -d "$JSON"                              \
-	  "https://api.github.com/repos/$REPO/releases/$RELEASEID"`
-	if [ "`echo "$RESULT" | tail -1`" = "200" ]; then
-	  echo DONE
-	else
-	  echo FAILED
-	  echo "$RESULT" 
-	  exit 1
-	fi
+  echo -n "Publishing release... "
+JSON=$(cat <<EOF
+{
+  "draft": false
+}
+EOF
+)
+  RESULT=`curl -s -w "\n%{http_code}\n"     \
+    -X PATCH                                \
+    -H "Authorization: token $GITHUBTOKEN"  \
+    -d "$JSON"                              \
+    "https://api.github.com/repos/$REPO/releases/$RELEASEID"`
+  if [ "`echo "$RESULT" | tail -1`" = "200" ]; then
+    echo DONE
+  else
+    echo FAILED
+    echo "$RESULT"
+    exit 1
+  fi
 fi
