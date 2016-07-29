@@ -115,35 +115,49 @@ if [[ -z "$GITHUBTOKEN" ]]; then
   exit 1
 fi
 
-echo "Creating GitHub release for $RELEASE"
-
-echo -n "Create draft release... "
-JSON=$(cat <<EOF
-{
-  "tag_name":         "$TAG",
-  "target_commitish": "master",
-  "name":             "$TAG",
-  "draft":            true,
-  "prerelease":       false
-}
-EOF
-)
+echo "Checking if GitHub release for $RELEASE exists already"
 RESULT=`curl -s -w "\n%{http_code}\n"     \
   -H "Authorization: token $GITHUBTOKEN"  \
   -d "$JSON"                              \
-  "https://api.github.com/repos/$REPO/releases"`
-if [ "`echo "$RESULT" | tail -1`" != "201" ]; then
-  echo FAILED
-  echo "$RESULT" 
-  exit 1
-fi 
-RELEASEID=`echo "$RESULT" | sed -ne 's/^  "id": \(.*\),$/\1/p'`
-if [[ -z "$RELEASEID" ]]; then
-  echo FAILED
-  echo "$RESULT" 
+  "https://api.github.com/repos/$REPO/releases/tags/$RELEASE"`
+if [ "`echo "$RESULT" | tail -1`" = "404" ]; then
+  echo "Creating GitHub release for $RELEASE"
+  RELEASENEW=true
+
+  echo -n "Create draft release... "
+  JSON=$(cat <<EOF
+  {
+    "tag_name":         "$TAG",
+    "target_commitish": "master",
+    "name":             "$TAG",
+    "draft":            true,
+    "prerelease":       false
+  }
+  EOF
+  )
+  RESULT=`curl -s -w "\n%{http_code}\n"     \
+    -H "Authorization: token $GITHUBTOKEN"  \
+    -d "$JSON"                              \
+    "https://api.github.com/repos/$REPO/releases"`
+  if [ "`echo "$RESULT" | tail -1`" != "201" ]; then
+    echo FAILED
+    echo "$RESULT" 
+    exit 1
+  fi 
+  RELEASEID=`echo "$RESULT" | sed -ne 's/^  "id": \(.*\),$/\1/p'`
+  if [[ -z "$RELEASEID" ]]; then
+    echo FAILED
+    echo "$RESULT" 
+    exit 1
+  fi
+  echo DONE
+elif [ "`echo "$RESULT" | tail -1`" = "200" ]; then
+  echo "GitHub release $RELEASE existing, adding assets."
+  RELEASEID=`echo $RESULT | grep '"id":' | sed 's/.*://' | tr -d '[[:space:]]'`
+else
+  echo "Error: No release files provided"
   exit 1
 fi
-echo DONE
 
 for FILE in $RELEASEFILES; do
   if [ ! -f $FILE ]; then
@@ -167,22 +181,24 @@ for FILE in $RELEASEFILES; do
   echo DONE
 done 
 
-echo -n "Publishing release... "
-JSON=$(cat <<EOF
-{
-  "draft": false
-}
-EOF
-)
-RESULT=`curl -s -w "\n%{http_code}\n"     \
-  -X PATCH                                \
-  -H "Authorization: token $GITHUBTOKEN"  \
-  -d "$JSON"                              \
-  "https://api.github.com/repos/$REPO/releases/$RELEASEID"`
-if [ "`echo "$RESULT" | tail -1`" = "200" ]; then
-  echo DONE
-else
-  echo FAILED
-  echo "$RESULT" 
-  exit 1
-fi 
+if [ "$RELEASENEW" = true ]; then
+	echo -n "Publishing release... "
+	JSON=$(cat <<EOF
+	{
+	  "draft": false
+	}
+	EOF
+	)
+	RESULT=`curl -s -w "\n%{http_code}\n"     \
+	  -X PATCH                                \
+	  -H "Authorization: token $GITHUBTOKEN"  \
+	  -d "$JSON"                              \
+	  "https://api.github.com/repos/$REPO/releases/$RELEASEID"`
+	if [ "`echo "$RESULT" | tail -1`" = "200" ]; then
+	  echo DONE
+	else
+	  echo FAILED
+	  echo "$RESULT" 
+	  exit 1
+	fi
+fi
