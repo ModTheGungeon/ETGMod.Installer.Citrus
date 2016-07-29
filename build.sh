@@ -1,3 +1,1 @@
-#!/bin/bash
-xbuild && \
-xbuild /p:Configuration=Release
+Core/build.sh
