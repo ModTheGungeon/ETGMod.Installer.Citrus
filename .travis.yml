@@ -10,6 +10,9 @@ before_install:
     - sudo apt-get install -y libicu52 libunwind8 git-lfs=1.1.0
     - git lfs install
     - git lfs pull
+    - pushd Core
+    - git lfs pull
+    - popd
 script:
     - chmod +x ./replace-version.sh
     - chmod +x ./build-msbuild.sh
