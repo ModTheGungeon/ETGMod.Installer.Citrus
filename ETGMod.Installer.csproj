@@ -12,6 +12,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <UseApplicationTrust>true</UseApplicationTrust>
     <FrameworkPathOverride Condition=" '$(TravisCore)' == 'true' ">lib-dotnet\</FrameworkPathOverride>
+    <StartupObject>ETGModInstaller.ExtInstaller</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
