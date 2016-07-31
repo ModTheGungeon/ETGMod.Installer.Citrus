@@ -47,7 +47,7 @@ namespace ETGModInstaller {
 
 
         public static bool Deobfuscate(InstallerWindow ins, string file) {
-			ins.MainMod.Dispose();
+            ins.MainMod.Dispose();
             if (!Directory.Exists(Path.Combine(ins.MainMod.Dir.FullName, "ModCache"))) {
                 Directory.CreateDirectory(Path.Combine(ins.MainMod.Dir.FullName, "ModCache"));
             }
@@ -112,8 +112,19 @@ namespace ETGModInstaller {
             File.Copy(fileIn, cachedPath, true);
             File.WriteAllText(cachedPathHash, hash);
             ins.EndProgress("Deobfuscated.");
-			
-			return true;
+            
+            // Old .mdb / .pdb invalid; remove it
+            string fileDB;
+            fileDB = Path.ChangeExtension(file, "pdb");
+            if (File.Exists(fileDB)) {
+                File.Delete(fileDB);
+            }
+            fileDB = file + ".mdb";
+            if (File.Exists(fileDB)) {
+                File.Delete(fileDB);
+            }
+            
+            return true;
         }
 
     }
