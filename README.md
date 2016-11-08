@@ -1,7 +1,7 @@
 ModTheGungeon Installer (Citrus)
 ===================
 So... copying some files and running a .bat / .sh is not your thing?
-It's dangerous out there - take this!
+It's dangerous out there - take this!  
 
 This is just an installing utility for [ModTheGungeon](https://modthegungeon.github.io/), a mod for the game "Enter The Gungeon".
 
