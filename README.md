@@ -1,3 +1,7 @@
+# DEPRECATED
+Originally used to workaround legal problems with de4dot being licensed under GIT and the installer under MIT - now serves no purpose as Gungeon isn't obfuscated anymore.  
+Left here as it may be useful again at a later date.
+
 ModTheGungeon Installer (Citrus)
 ===================
 So... copying some files and running a .bat / .sh is not your thing?
